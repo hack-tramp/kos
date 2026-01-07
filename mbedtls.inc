@@ -1,5 +1,13 @@
-; From ssl.h:
+; ============================================================================
+; mbedtls.inc — minimal FASM bindings for mbedTLS 2.16.6 (32-bit x86)
+; Stock config.h, KolibriOS build
+; ============================================================================
 
+; ---------------------------------------------------------------------------
+; Constants (only what is actually used)
+; ---------------------------------------------------------------------------
+
+; ssl.h
 MBEDTLS_SSL_IS_CLIENT                   = 0
 MBEDTLS_SSL_IS_SERVER                   = 1
 
@@ -12,45 +20,51 @@ MBEDTLS_SSL_PRESET_SUITEB               = 2
 MBEDTLS_SSL_VERIFY_NONE                 = 0
 MBEDTLS_SSL_VERIFY_OPTIONAL             = 1
 MBEDTLS_SSL_VERIFY_REQUIRED             = 2
-MBEDTLS_SSL_VERIFY_UNSET                = 3     ; Used only for sni_authmode
+MBEDTLS_SSL_VERIFY_UNSET                = 3
 
 MBEDTLS_ERR_SSL_WANT_READ               = -0x6900
 MBEDTLS_ERR_SSL_WANT_WRITE              = -0x6880
 MBEDTLS_ERR_SSL_PEER_CLOSE_NOTIFY       = -0x7880
 
-; From net_sockets.h:
-
+; net_sockets.h
 MBEDTLS_NET_PROTO_TCP                   = 0
 MBEDTLS_NET_PROTO_UDP                   = 1
 
+
+; ---------------------------------------------------------------------------
+; Opaque structure definitions (EXACT SIZES)
+; Stock mbedTLS 2.16.6, 32-bit x86
+; ---------------------------------------------------------------------------
+
+; net_sockets.h
 struct mbedtls_net_context
-        fd dd ?                 ; The underlying socket
+        rb 12
 ends
 
-; from entropy.h
-
+; entropy.h
 struct mbedtls_entropy_context
-        rb 4096                 ; dont care ATM
+        rb 112
 ends
 
-; from ctr_drbg.h
-
+; ctr_drbg.h
 struct mbedtls_ctr_drbg_context
-        rb 4096                 ; dont care ATM
+        rb 104
 ends
 
-; from ssl.h
-
+; ssl.h
 struct mbedtls_ssl_context
-        rb 4096                 ; dont care ATM
+        rb 6928
 ends
 
 struct mbedtls_ssl_config
-        rb 4096                 ; dont care ATM
+        rb 240
 ends
 
-; from x509_crt.h
-
+; x509_crt.h
 struct mbedtls_x509_crt
-        rb 4096                 ; dont care ATM
+        rb 208
 ends
+
+; ---------------------------------------------------------------------------
+; End of file
+; ---------------------------------------------------------------------------

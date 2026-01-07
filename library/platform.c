@@ -217,27 +217,31 @@ int mbedtls_platform_set_exit( void (*exit_func)( int status ) )
 #if defined(MBEDTLS_PLATFORM_TIME_ALT)
 #if !defined(MBEDTLS_PLATFORM_STD_TIME)
 /*
- * Make dummy function to prevent NULL pointer dereferences
+ * KolibriOS time function using sys_clock (syscall 3)
  */
-static mbedtls_time_t platform_time_uninit( mbedtls_time_t* timer )
+static mbedtls_time_t platform_time_kolibri(mbedtls_time_t* timer)
 {
-    ((void) timer);
-    return( 0 );
-}
+    mbedtls_time_t now;
 
-#define MBEDTLS_PLATFORM_STD_TIME   platform_time_uninit
+    // Inline assembly to call sys_clock (syscall number 3)
+    asm volatile(
+        "mov $3, %%eax\n"   // syscall number for sys_clock
+        "int $0x40\n"       // Kolibri syscall interrupt
+        "mov %%eax, %0\n"
+        : "=r"(now)
+        :
+        : "eax"
+    );
+
+    if (timer) *timer = now;
+    return now;
 #endif /* !MBEDTLS_PLATFORM_STD_TIME */
 
-mbedtls_time_t (*mbedtls_time)( mbedtls_time_t* timer ) = MBEDTLS_PLATFORM_STD_TIME;
+#define MBEDTLS_PLATFORM_STD_TIME   platform_time_kolibri
 
-int mbedtls_platform_set_time( mbedtls_time_t (*time_func)( mbedtls_time_t* timer ) )
-{
-    mbedtls_time = time_func;
-    return( 0 );
-}
 #endif /* MBEDTLS_PLATFORM_TIME_ALT */
-
 #endif /* MBEDTLS_HAVE_TIME */
+
 
 #if defined(MBEDTLS_ENTROPY_NV_SEED)
 #if !defined(MBEDTLS_PLATFORM_NO_STD_FUNCTIONS) && defined(MBEDTLS_FS_IO)

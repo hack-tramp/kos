@@ -17,7 +17,7 @@ jobs:
     - name: Set up MinGW (for compiling 32-bit)
       run: |
         sudo apt-get update
-        sudo apt-get install -y mingw-w64
+        sudo apt-get install -y mingw-w64 gcc-multilib libc6-dev-i386
 
     - name: Compile mbedTLS
       run: |

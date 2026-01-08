@@ -2,15 +2,13 @@ name: Compile Object Files for KolibriOS
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   compile:
-    runs-on: ubuntu-latest  # Use Ubuntu-based GitHub runner
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
@@ -23,24 +21,23 @@ jobs:
 
     - name: Compile mbedTLS
       run: |
-        mkdir build
-        cd build
-        # Compile all mbedTLS source files into mbedtls.obj
-        gcc -m32 -c ../library/*.c -O2 -Wall -I../include/mbedtls -o mbedtls.obj
+        mkdir -p build
+        gcc -m32 -c library/*.c -O2 -Wall -Iinclude/mbedtls
+        # Combine all object files into a single .obj file if needed
+        ld -r *.o -o build/mbedtls.obj
 
     - name: Compile kosnet files
       run: |
-        # Compile the kosnet networking files
-        gcc -m32 -c ../kosnet/network.c -O2 -Wall -I../include/mbedtls -o network.o
-        gcc -m32 -c ../kosnet/socket.c -O2 -Wall -I../include/mbedtls -o socket.o
-        gcc -m32 -c ../kosnet/dlfcn.c -O2 -Wall -I../include/mbedtls -o dlfcn.o
+        gcc -m32 -c kosnet/network.c -O2 -Wall -Iinclude/mbedtls -o build/network.o
+        gcc -m32 -c kosnet/socket.c -O2 -Wall -Iinclude/mbedtls -o build/socket.o
+        gcc -m32 -c kosnet/dlfcn.c -O2 -Wall -Iinclude/mbedtls -o build/dlfcn.o
 
     - name: Prepare files for USB (upload mbedtls.obj, mbedtls.inc, example.asm)
       run: |
         mkdir -p usb_files
         cp build/mbedtls.obj usb_files/
-        cp ../include/mbedtls/mbedtls.inc usb_files/
-        cp ../programs/example.asm usb_files/
+        cp include/mbedtls/mbedtls.inc usb_files/ 
+        cp programs/example.asm usb_files/ 
 
     - name: Upload compiled files for USB
       uses: actions/upload-artifact@v2

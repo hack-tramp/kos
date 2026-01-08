@@ -40,7 +40,7 @@ jobs:
         cp programs/example.asm usb_files/ 
 
     - name: Upload compiled files for USB
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: compiled-files
         path: usb_files/

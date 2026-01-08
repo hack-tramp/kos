@@ -22,15 +22,15 @@ jobs:
     - name: Compile mbedTLS
       run: |
         mkdir -p build
-        gcc -m32 -c library/*.c -O2 -Wall -Iinclude/mbedtls
+        gcc -m32 -c library/*.c -O2 -Wall -Iinclude
         # Combine all object files into a single .obj file if needed
         ld -r *.o -o build/mbedtls.obj
 
     - name: Compile kosnet files
       run: |
-        gcc -m32 -c kosnet/network.c -O2 -Wall -Iinclude/mbedtls -o build/network.o
-        gcc -m32 -c kosnet/socket.c -O2 -Wall -Iinclude/mbedtls -o build/socket.o
-        gcc -m32 -c kosnet/dlfcn.c -O2 -Wall -Iinclude/mbedtls -o build/dlfcn.o
+        gcc -m32 -c kosnet/network.c -O2 -Wall -Iinclude -o build/network.o
+        gcc -m32 -c kosnet/socket.c -O2 -Wall -Iinclude -o build/socket.o
+        gcc -m32 -c kosnet/dlfcn.c -O2 -Wall -Iinclude -o build/dlfcn.o
 
     - name: Prepare files for USB (upload mbedtls.obj, mbedtls.inc, example.asm)
       run: |

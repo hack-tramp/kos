@@ -1,0 +1,37 @@
+name: Link Object Files into Final Executable
+
+on:
+  workflow_run:
+    workflows: ["Compile Object Files for KolibriOS"]
+    types:
+      - completed
+
+jobs:
+  link:
+    runs-on: ubuntu-latest  # GitHub runner
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Download compiled files
+      uses: actions/download-artifact@v2
+      with:
+        name: compiled-files
+        path: usb_files/
+
+    - name: Compile example.o (uploaded from KolibriOS)
+      run: |
+        # Assuming the example.o file is uploaded from KolibriOS after running FASM on the laptop
+        cp usb_files/example.o ./example.o
+        
+    - name: Link all object files into the final executable
+      run: |
+        gcc -m32 -o example example.o network.o socket.o dlfcn.o mbedtls.obj 
+        
+
+    - name: Upload final executable
+      uses: actions/upload-artifact@v2
+      with:
+        name: kolibri-final-executable
+        path: example

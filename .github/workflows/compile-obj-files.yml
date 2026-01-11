@@ -37,7 +37,7 @@ jobs:
         mkdir -p usb_files
         cp build/mbedtls.obj usb_files/
         cp mbedtls.inc usb_files/ 
-        cp programs/example.asm usb_files/ 
+        cp example.asm usb_files/ 
 
     - name: Upload compiled files for USB
       uses: actions/upload-artifact@v4

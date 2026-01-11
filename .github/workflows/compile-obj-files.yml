@@ -22,7 +22,7 @@ jobs:
     - name: Compile mbedTLS
       run: |
         mkdir -p build
-        gcc -m32 -c library/*.c -O2 -Wall -Iinclude -Ikosnet
+        gcc -m32 -c library/*.c -O2 -Wall  -Iinclude -I./
         # Combine all object files into a single .obj file if needed
         ld -r *.o -o build/mbedtls.obj
 

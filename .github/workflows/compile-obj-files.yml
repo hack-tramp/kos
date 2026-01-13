@@ -23,9 +23,11 @@ jobs:
     - name: Compile mbedTLS + kosnet into single .obj
       run: |
         mkdir -p build
+        gcc -m32 -c library/*.c -O2 -Wall  -Iinclude -I./
+        # Combine all object files into a single .o file 
+        ld -m elf_i386 -r *.o -o build/mbedtls_base.o
         
         # 1. Compile all .c files individually
-        gcc -m32 -c library/*.c -O2 -Wall -Iinclude -I. -o build/mbedtls_base.o
         gcc -m32 -c kosnet/network.c -O2 -Wall -Iinclude -I. -o build/network.o
         gcc -m32 -c kosnet/socket.c -O2 -Wall -Iinclude -I. -o build/socket.o
         gcc -m32 -c kosnet/dlfcn.c -O2 -Wall -Iinclude -I. -o build/dlfcn.o

@@ -19,18 +19,20 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y mingw-w64 gcc-multilib libc6-dev-i386
 
-    - name: Compile mbedTLS
+        
+    - name: Compile mbedTLS + kosnet into single .obj
       run: |
         mkdir -p build
-        gcc -m32 -c library/*.c -O2 -Wall  -Iinclude -I./
-        # Combine all object files into a single .obj file if needed
-        ld -m elf_i386 -r *.o -o build/mbedtls.obj
-
-    - name: Compile kosnet files
-      run: |
+        # Compile mbedTLS
+        gcc -m32 -c library/*.c -O2 -Wall -Iinclude -I. -o build/mbedtls_base.o
+        # Compile kosnet files
         gcc -m32 -c kosnet/network.c -O2 -Wall -Iinclude -I. -o build/network.o
         gcc -m32 -c kosnet/socket.c -O2 -Wall -Iinclude -I. -o build/socket.o
         gcc -m32 -c kosnet/dlfcn.c -O2 -Wall -Iinclude -I. -o build/dlfcn.o
+        # Merge all .o files into single KolibriOS .obj
+        ld -m elf_i386 -r build/mbedtls_base.o build/network.o build/socket.o build/dlfcn.o -o build/mbedtls.obj
+
+        
 
     - name: Prepare files for USB (upload mbedtls.obj, mbedtls.inc, example.asm)
       run: |

@@ -240,7 +240,7 @@ exit.no_tls:
 ; Data Section
 align 4
 @IMPORT:
-library lib_kosnet, 'libkosnet.a'
+
 
 library lib_mbedtls, 'mbedtls.obj'
 

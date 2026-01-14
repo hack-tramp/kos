@@ -28,9 +28,9 @@ jobs:
         ld -m elf_i386 -r *.o -o build/mbedtls.obj
         
         # Compile all kosnet files to .o
-        gcc -m32 -c kosnet/network.c -o network.o
-        gcc -m32 -c kosnet/socket.c -o socket.o
-        gcc -m32 -c kosnet/dlfcn.c -o dlfcn.o
+        gcc -m32 -c kosnet/network.c -I. -o network.o
+        gcc -m32 -c kosnet/socket.c -I. -o socket.o
+        gcc -m32 -c kosnet/dlfcn.c -I. -o dlfcn.o
         
         # Merge into a single relocatable object for FASM
         ld -m elf_i386 -r network.o socket.o dlfcn.o -o build/kosnet.obj
